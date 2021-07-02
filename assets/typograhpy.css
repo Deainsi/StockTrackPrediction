@@ -1,0 +1,16 @@
+body{
+    margin: 0;
+    background-color: #2a2828;
+    color: white;
+}
+button{
+    color: aliceblue;
+}
+button:hover
+{
+    color: darkgray;
+}
+.modebar{
+      display: none !important;
+}
+
