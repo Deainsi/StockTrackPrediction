@@ -15,21 +15,23 @@ from tensorflow.python.keras.models import load_model
 from app import app
 
 
-@app.callback(Output('session', 'data'), Output('prediction','children'), Output('prediction','style'),Input('Stock', 'value'), State('session', 'data'))
+@app.callback(Output('session', 'data'), Output('prediction', 'children'), Output('prediction', 'style'),
+              Input('Stock', 'value'), State('session', 'data'))
 def update_session(ticker, dat):
-    api_key = "8NZ8WBHSJNM1SA6I"
+    api_key = "Your API key"
 
     url_string = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&outputsize=full&apikey={api_key}"
     color = {}
     if dat:
         if ticker in dat:
 
-            if pd.read_json(dat[f'{ticker}'], orient='split').Close.iloc[-30] > pd.read_json(dat[f'{ticker}'], orient='split').Close.iloc[-31]:
-                color['color']="#046613"
+            if pd.read_json(dat[f'{ticker}'], orient='split').Close.iloc[-30] > \
+                    pd.read_json(dat[f'{ticker}'], orient='split').Close.iloc[-31]:
+                color['color'] = "#046613"
             else:
                 color['color'] = "#bd1604"
 
-            return dat,  f"{pd.read_json(dat[f'{ticker}'], orient='split').Close.iloc[-30]:.2f}", color
+            return dat, f"{pd.read_json(dat[f'{ticker}'], orient='split').Close.iloc[-30]:.2f}", color
 
     with request.urlopen(url_string) as url:
         data = json.loads(url.read().decode())
@@ -43,7 +45,7 @@ def update_session(ticker, dat):
             df.index = df.index + 1
 
         scaler = MinMaxScaler()
-        lstm_model = load_model('mm.h5')
+        lstm_model = load_model('lstm_model.h5')
         df = df.sort_index()
 
         rd = df.Close.iloc[-40:].values
